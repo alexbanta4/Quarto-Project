@@ -18,6 +18,7 @@ from time import sleep
 from typing import Any
 from random import random
 from companionsKQML import Pythonian, convert_to_boolean, convert_to_int
+from kqml import KQMLPerformative
 
 LOGGER = getLogger(__name__)
 
@@ -285,6 +286,7 @@ def plan(AGENT,planString,waitTime: int):
     return True
 
 def safePlan(AGENT,planString):
+    print(planString+" is starting")
     AGENT.achieve_on_agent('session-reasoner',planString)
     while len(AGENT.facts) < 1:
         sleep(1)
@@ -307,10 +309,10 @@ def placePieceMachine(AGENT):
     return safePlan(AGENT,'(placePiece)')
 
 def givePieceHuman(AGENT,pieceNum: int):
-    return safePlan(AGENT,'givePieceSpec piece'+piece+')')
+    return safePlan(AGENT,'(givePieceSpec piece'+pieceNum+')')
 
 def placePieceHuman(AGENT,x: int,y: int):
-    return safePlan(AGENT,'placePieceLocation '+str(x)+' '+str(y)+')')
+    return safePlan(AGENT,'(placePieceLocation '+str(x)+' '+str(y)+')')
 
 def getBoard(AGENT):
     query(AGENT,'(cell ?x ?y ?piece)')
@@ -321,8 +323,16 @@ def givenPiece(AGENT):
     return str(AGENT.facts[0][1])
 
 def gameIsOver(AGENT):
+    #Check for tie
+    done = (len(query(AGENT,'(unplacedPiece ?piece)')) == 0)
+    #Otherwise check for win
     query(AGENT,'(boardWon ?result)')
-    return ("True" in str(AGENT.facts[0][1]))
+    winner = "True" in str(AGENT.facts[0][1])
+    if winner:
+        return "Won"
+    elif done:
+        return "Tie"
+    return "Not over"
 
 if __name__ == "__main__":
     AGENT = QuartoAgent.parse_command_line_args()
