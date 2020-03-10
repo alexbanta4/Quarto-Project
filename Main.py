@@ -3,6 +3,7 @@ import sys
 import pygame
 import Quarto
 import companionsKQML
+import random
 
 class Block:
     def __init__(self, id):
@@ -119,7 +120,7 @@ def game():
         "1000", "1001", "1010", "1011",
         "1100", "1101", "1110", "1111"]
     """
-    debug_mode = True
+    debug_mode = False
 
     unused_pieces = []
     for i in range(1,17):
@@ -164,6 +165,7 @@ def game():
 
     # Backend magic
     if not debug_mode:
+        print("Welcome to Quarto! Loading board...")
         quarto_agent = Quarto.QuartoAgent.parse_command_line_args()
         Quarto.resetBoard(quarto_agent)
 
@@ -183,17 +185,28 @@ def game():
 
         Quarto.setPlayerType(quarto_agent, ai_strat)
 
-    computer_places = True
+    rand = random.random()
+    computer_places = (rand < 0.5)
+    gameOver = "Not over"
 
-    while True:
+    print("Notes: When placing pieces, (0,0) is the spot on the top left,")
+    print("And (3,3) is the spot on the bottom right.")
+    print("Also, when picking a piece to give, enter a number from 1-16.")
+    print("1 is the top left piece, and 16 is the bottom right.")
+
+    while (gameOver == "Not over"):
         for event in pygame.event.get():
             if event.type == pygame.QUIT: sys.exit()
 
         # Get piece from user
         if computer_places or debug_mode:
-            input_block = input("Please enter piece: ")
+            print("It is the computer's turn.")
+            input_block = input("Please enter the piece you will give the computer.")
         else:
             # Get piece from computer
+            print("It is your turn.")
+            print("The computer is giving you a piece... (This may take a while)")
+            Quarto.givePieceMachine(quarto_agent)
             input_block = Quarto.givenPiece(quarto_agent).strip("piece")
 
         # Check if piece is legal
@@ -213,7 +226,9 @@ def game():
             if computer_places and not debug_mode:
                 # Get placement from computer
                 # Update backend gamestate
+                print("Giving the piece to the computer...")
                 Quarto.givePieceHuman(quarto_agent, input_block)
+                print("The computer is placing its piece on the board... (This may take a second)")
                 Quarto.placePieceMachine(quarto_agent)
                 # Ask for where it placed it
                 ai_result = Quarto.getBoard(quarto_agent)
@@ -228,44 +243,60 @@ def game():
                         input_x = cell_x
                         input_y = cell_y
                         break
-            
+
             else:
-                # Human inputs
-                input_x = int(input("Please enter x: "))
-                input_y = int(input("Please enter y: "))
+                validInputs = False
+                while not validInputs:
+                    # Human inputs
+                    print("It is your turn to place a piece.")
+                    input_x = int(input("Please enter the x coordinate: "))
+                    input_y = int(input("Please enter the y coordinate: "))
 
-                # Check if coordinate is legal
-                # input_x = int(input("Please enter x: "))
-                # input_y = int(input("Please enter y: "))
+                    # Check if coordinate is legal
+                    # input_x = int(input("Please enter x: "))
+                    # input_y = int(input("Please enter y: "))
 
-                if input_x < 0 or input_x > 3 or input_y < 0 or input_y > 3:
-                    print("Index out of range!")
+                    if input_x < 0 or input_x > 3 or input_y < 0 or input_y > 3:
+                        print("Index out of range!")
+                    elif board.spaces[input_x][input_y] != 0:
+                        print("A piece has already been placed there!")
+                    else:
+                        validInputs = True
 
-                elif board.spaces[input_x][input_y] != 0:
-                    print("A piece has already been placed there!")
+                # Place piece
+                print("Placing your piece on the board...")
+                Quarto.placePieceHuman(quarto_agent,input_x+1,input_y+1)
 
-                else:
-                    # Place piece
-                    board.place(Block(input_block), int(input_x), int(input_y))
-                    
-                    # Swap piece off board with empty tile on board
-                    list_index = input_x + (input_y * 4)
-                    swap_out = on_board[list_index]
-                    on_board[list_index] = off_board[int(input_block)-1]
-                    off_board[int(input_block)-1] = swap_out
+            board.place(Block(input_block), int(input_x), int(input_y))
+            # Swap piece off board with empty tile on board
+            list_index = input_x + (input_y * 4)
+            swap_out = on_board[list_index]
+            on_board[list_index] = off_board[int(input_block)-1]
+            off_board[int(input_block)-1] = swap_out
 
-                    draw_board(screen, on_board, off_board)
+            draw_board(screen, on_board, off_board)
 
-                    used_pieces.append(input_block)
-                    idx_to_delete = unused_pieces.index(input_block)
-                    del unused_pieces[idx_to_delete]
+            used_pieces.append(input_block)
+            idx_to_delete = unused_pieces.index(input_block)
+            del unused_pieces[idx_to_delete]
 
-                    computer_places = not computer_places
+            gameOver = Quarto.gameIsOver(quarto_agent)
+
+            computer_places = not computer_places
 
         """
         if board.check_whole():
             print("QUARTO!")
         """
+    print(Quarto.getBoard(quarto_agent))
+    computer_places = not computer_places # undo extra inversion
+    if (gameOver == "Tie"):
+        print("Draw game; better luck next time!")
+    elif (computer_places):
+        print("Game is over, computer won!")
+    else:
+        print("Game is over, you won!")
+
 
 
 if __name__ == "__main__":

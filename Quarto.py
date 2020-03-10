@@ -1,14 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-# 3.6
-# @Filename:    test_agent.py
-# @Author:      Samuel Hill
-# @Date:        2020-02-10 15:39:38
-# @Last Modified by:   Samuel Hill
-# @Last Modified time: 2020-02-13 15:35:35
-
-"""Simple example file for how to use Pythonian, and a test file to explore all
-of the functionality Pythonian (and it's helpers) provide
+"""Quarto agent to run the game
 Attributes:
     LOGGER (logging): The logger (from logging) to handle debugging
 """
@@ -286,11 +276,10 @@ def plan(AGENT,planString,waitTime: int):
     return True
 
 def safePlan(AGENT,planString):
-    print(planString+" is starting")
     AGENT.achieve_on_agent('session-reasoner',planString)
     while len(AGENT.facts) < 1:
         sleep(1)
-    print(planString + ": " + str(AGENT.facts))
+    #print(planString + ": " + str(AGENT.facts))
     return True
 
 #Some methods to contain companions strings to Quarto.py
@@ -301,11 +290,9 @@ def setPlayerType(AGENT,ptype):
     return safePlan(AGENT,'(setPlayerType '+str(ptype)+')')
 
 def givePieceMachine(AGENT):
-    print("Figuring out what piece to give...")
     return safePlan(AGENT,'(givePiece)')
 
 def placePieceMachine(AGENT):
-    print("Figuring out where to place this piece...")
     return safePlan(AGENT,'(placePiece)')
 
 def givePieceHuman(AGENT,pieceNum: int):
@@ -324,7 +311,8 @@ def givenPiece(AGENT):
 
 def gameIsOver(AGENT):
     #Check for tie
-    done = (len(query(AGENT,'(unplacedPiece ?piece)')) == 0)
+    query(AGENT, '(unplacedPiece ?piece)')
+    done = (len(AGENT.facts) == 0)
     #Otherwise check for win
     query(AGENT,'(boardWon ?result)')
     winner = "True" in str(AGENT.facts[0][1])
