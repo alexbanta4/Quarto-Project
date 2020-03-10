@@ -1,12 +1,16 @@
 ;;; Planning Ontology
-(in-microtheory QuartoMt)
+(in-microtheory QuartoOntologyMt)
+(genlMt QuartoMt QuartoOntologyMt)
 (genlMt QuartoMt GameRulesMt)
 (genlMt Session-ReasonerPlanMt QuartoMt)
 
 (isa QuartoPiece ClarifyingCollectionType)
+(comment QuartoPiece "Collection of playing pieces for the game Quarto.")
 (isa QuartoAttribute ClarifyingCollectionType)
+(comment QuartoAttribute "Collection of characteristics for pieces in Quarto. Each playing piece has a unique combination of four attributes.")
 
 (isa resetBoard ComplexActionPredicate)
+(comment resetBoard "(resetBoard) will build a 4x4 combination of cells that are all Empty, set all 16 pieces to ungiven, the givenPiece to Empty, and boardWon to False. If there is any information on the board, that will be forgotten.")
 (arity resetBoard 0)
 
 (isa placePiece ComplexActionPredicate)
@@ -18,6 +22,9 @@
 (isa givePieceSpec ComplexActionPredicate)
 (arity givePieceSpec 1)
 (arg1Isa givePieceSpec QuartoPiece)
+
+(isa setPlayerType ComplexActionPredicate)
+(arity setPlayerType 1)
 
 (isa placePieceLocation ComplexActionPredicate)
 (arity placePieceLocation 2)
@@ -34,6 +41,12 @@
 (isa unplacedPiece Predicate)
 (arity unplacedPiece 1)
 (arg1Isa unplacedPiece QuartoPiece)
+
+(isa playerType Predicate)
+(arity playerType 1)
+
+(isa boardWon Predicate)
+(arity boardWon 1)
 
 (isa shareAttribute Predicate)
 (arity shareAttribute 3)
@@ -56,11 +69,25 @@
 
 (isa winningPlace Predicate)
 (arity winningPlace 3)
+(arg3Isa winningPlace QuartoPiece)
 
-(isa winningPiece Predicate)
-(arity winningPiece 1)
+(isa complexPlace Predicate)
+(arity complexPlace 3)
+(arg3Isa complexPlace QuartoPiece)
+
+(isa winningBoard Predicate)
+(arity winningBoard 1)
 
 (isa safePiece Predicate)
 (arity safePiece 1)
 (arg1Isa safePiece QuartoPiece)
- 
+
+(isa simplePiece Predicate)
+(arity simplePiece 1)
+(arg1Isa simplePiece QuartoPiece)
+
+(isa winningBoard Predicate)
+(arity winningBoard 1)
+
+(isa wingWin Predicate)
+(arity wingWin 0)

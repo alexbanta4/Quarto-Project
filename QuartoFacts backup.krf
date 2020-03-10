@@ -1,10 +1,17 @@
 (in-microtheory QuartoMt)
 
-;;; Sets size of the board
+
+;;; DEFINE BOARD, SPACES, AND PIECES
+;;; create new category QuartoGamePiece
+;;; genls to gamepiece
+
+;;; GOAL STATE HORN CLAUSES
+
+;;; (spatialLocationPred Quarto cell 4)
 (maxCoordX Quarto 4)
 (maxCoordY Quarto 4)
 
-;;; There are four attribute types:
+;;; We can use the same relation for all four attribute types
 ;;; solid and hollow, square and circle, short and tall, white and brown
 (isa solid QuartoAttribute)
 (isa hollow QuartoAttribute)
@@ -15,7 +22,7 @@
 (isa square QuartoAttribute)
 (isa circle QuartoAttribute)
 
-;;; Defines all 16 pieces and their attributes
+
 (isa piece1 QuartoPiece)
 (pieceAttribute piece1 solid)
 (pieceAttribute piece1 square)
@@ -113,19 +120,16 @@
 (pieceAttribute piece16 brown)
 
 
-;;; (shareAttribute QUARTOPIECE QUARTOPIECE QUARTOATTRIBUTE) determines if an attribute is shared between to pieces, and what it is.
 (<== (shareAttribute ?piece1 ?piece2 ?attribute)
     (pieceAttribute ?piece1 ?attribute)
     (pieceAttribute ?piece2 ?attribute))
 
-;;; (shareTwoAttributes QUARTOPIECE QUARTOPIECE) determines if two pieces share at least two attributes.
 (<== (shareTwoAttributes ?piece1 ?piece2)
     (shareAttribute ?piece1 ?piece2 ?attribute1)
     (shareAttribute ?piece1 ?piece2 ?attribute2)
     (different ?piece1 ?piece2)
     (different ?attribute1 ?attribute2))
 
-;;; (shareThreeAttributes QUARTOPIECE QUARTOPIECE) determines if two pieces share at least three attributes.
 (<== (shareThreeAttributes ?piece1 ?piece2)
     (shareAttribute ?piece1 ?piece2 ?attribute1)
     (shareAttribute ?piece1 ?piece2 ?attribute2)
@@ -135,7 +139,7 @@
     (different ?attribute1 ?attribute3)
     (different ?attribute2 ?attribute3))
 
-;;; (winningBoard ?num) sets ?num to 100 if the current board has won. 
+
 (<== (winningBoard 100)
     (cell ?x ?y1 ?piece1)
     (cell ?x ?y2 ?piece2)
@@ -178,7 +182,6 @@
     (pieceAttribute ?piece3 ?attribute)
     (pieceAttribute ?piece4 ?attribute))
 
-;;; (all4Different ?a ?b ?c ?d) checks if all four values are different
 (<== (all4Different ?a ?b ?c ?d)
     (different ?a ?b)
     (different ?a ?c)
@@ -187,7 +190,6 @@
     (different ?b ?d)
     (different ?c ?d))
 
-;;; (winningPlace ?x ?y QUARTOPIECE) finds the coordinates, if any, that will allow QUARTOPIECE to create a row of four matching attributes.
 (<== (winningPlace ?x ?y ?piece)
     (cell ?x ?y1 ?piece1)
     (different ?piece1 Empty)
@@ -320,7 +322,6 @@
     (pieceAttribute ?piece3 ?attribute)
     (pieceAttribute ?piece ?attribute))
 
-;;; (safePiece ?piece) will return any pieces that do not have a winning place on the board.
 (<== (safePiece ?piece)
     (isa ?piece QuartoPiece)
     (uninferredSentence (winningPlace 1 1 ?piece))
@@ -341,12 +342,11 @@
     (uninferredSentence (winningPlace 4 4 ?piece))
     )
 
-;;; (wingWin) will return true if their is an unplaced piece that has a winning place.
+;;; If there is an unplaced piece that could create a win
 (<== (wingWin) 
     (unplacedPiece ?piece)
     (uninferredSentence (safePiece ?piece)))
     
-;;; (complexPlace ?x ?y QUARTOPIECE) finds the coordinates, if any, that will allow the given piece to create a row of three matching attributes.
 (<== (complexPlace ?x ?y ?piece)
     (cell ?x1 ?y ?piece1)
     (different ?piece1 Empty)
@@ -370,8 +370,7 @@
     (pieceAttribute ?piece1 ?attribute)
     (pieceAttribute ?piece2 ?attribute)
     (pieceAttribute ?piece ?attribute))
-
-;;; (simplePiece QUARTOPIECE) will return any pieces that do not have a complex place on the board.
+    
 (<== (simplePiece ?piece)
     (isa ?piece QuartoPiece)
     (uninferredSentence (complexPlace 1 1 ?piece))
