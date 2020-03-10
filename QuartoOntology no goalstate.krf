@@ -1,0 +1,66 @@
+;;; Planning Ontology
+(in-microtheory QuartoMt)
+(genlMt QuartoMt GameRulesMt)
+(genlMt Session-ReasonerPlanMt QuartoMt)
+
+(isa QuartoPiece ClarifyingCollectionType)
+(isa QuartoAttribute ClarifyingCollectionType)
+
+(isa resetBoard ComplexActionPredicate)
+(arity resetBoard 0)
+
+(isa placePiece ComplexActionPredicate)
+(arity placePiece 0)
+
+(isa givePiece ComplexActionPredicate)
+(arity givePiece 0)
+
+(isa givePieceSpec ComplexActionPredicate)
+(arity givePieceSpec 1)
+(arg1Isa givePieceSpec QuartoPiece)
+
+(isa placePieceLocation ComplexActionPredicate)
+(arity placePieceLocation 2)
+
+(isa pieceAttribute Predicate)
+(arity pieceAttribute 2)
+(arg1Isa pieceAttribute QuartoPiece)
+(arg2Isa pieceAttribute QuartoAttribute)
+
+(isa givenPiece Predicate)
+(arity givenPiece 1)
+(arg1Isa givenPiece QuartoPiece)
+
+(isa unplacedPiece Predicate)
+(arity unplacedPiece 1)
+(arg1Isa unplacedPiece QuartoPiece)
+
+(isa shareAttribute Predicate)
+(arity shareAttribute 3)
+(arg1Isa shareAttribute QuartoPiece)
+(arg2Isa shareAttribute QuartoPiece)
+(arg3Isa shareAttribute QuartoAttribute)
+
+(isa shareTwoAttributes Predicate)
+(arity shareTwoAttributes 2)
+(arg1Isa shareTwoAttributes QuartoPiece)
+(arg2Isa shareTwoAttributes QuartoPiece)
+
+(isa shareThreeAttributes Predicate)
+(arity shareThreeAttributes 2)
+(arg1Isa shareThreeAttributes QuartoPiece)
+(arg1Isa shareThreeAttributes QuartoPiece)
+
+(isa all4Different Predicate)
+(arity all4Different 4)
+
+(isa winningPlace Predicate)
+(arity winningPlace 3)
+
+(isa winningPiece Predicate)
+(arity winningPiece 1)
+
+(isa safePiece Predicate)
+(arity safePiece 1)
+(arg1Isa safePiece QuartoPiece)
+ 
