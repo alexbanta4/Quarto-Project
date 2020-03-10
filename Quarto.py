@@ -299,9 +299,11 @@ def setPlayerType(AGENT,ptype):
     return safePlan(AGENT,'(setPlayerType '+str(ptype)+')')
 
 def givePieceMachine(AGENT):
+    print("Figuring out what piece to give...")
     return safePlan(AGENT,'(givePiece)')
 
 def placePieceMachine(AGENT):
+    print("Figuring out where to place this piece...")
     return safePlan(AGENT,'(placePiece)')
 
 def givePieceHuman(AGENT,pieceNum: int):
