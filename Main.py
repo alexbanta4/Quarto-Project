@@ -117,6 +117,7 @@ def game():
         "1000", "1001", "1010", "1011",
         "1100", "1101", "1110", "1111"]
     """
+    debug_mode = True
 
     unused_pieces = []
     for i in range(1,17):
@@ -160,24 +161,25 @@ def game():
     # test_rect = pygame.draw.rect(screen, [255,255,255,128], )
 
     # Backend magic
-    quarto_agent = Quarto.QuartoAgent.parse_command_line_args()
-    Quarto.resetBoard(quarto_agent)
+    if not debug_mode:
+        quarto_agent = Quarto.QuartoAgent.parse_command_line_args()
+        Quarto.resetBoard(quarto_agent)
 
-    ai_set = False
-    while not ai_set:
-        ai_set = True
-        ai_strat = input("Select AI strategy. S for Survivor, D for Denier, C for Complicator.  >>")
-        if ai_strat == "S":
-            ai_strat = "Survivor"
-        elif ai_strat == "D":
-            ai_strat = "Denier"
-        elif ai_strat == "C":
-            ai_strat = "Complicator"
-        else: 
-            print("Invalid AI type")
-            ai_set = False
+        ai_set = False
+        while not ai_set:
+            ai_set = True
+            ai_strat = input("Select AI strategy. S for Survivor, D for Denier, C for Complicator.  >>")
+            if ai_strat == "S":
+                ai_strat = "Survivor"
+            elif ai_strat == "D":
+                ai_strat = "Denier"
+            elif ai_strat == "C":
+                ai_strat = "Complicator"
+            else: 
+                print("Invalid AI type")
+                ai_set = False
 
-    Quarto.setPlayerType(quarto_agent, ai_strat)
+        Quarto.setPlayerType(quarto_agent, ai_strat)
 
     computer_places = True
 
@@ -186,22 +188,32 @@ def game():
             if event.type == pygame.QUIT: sys.exit()
 
         # Get piece from user
-        if computer_places:
+        if computer_places or debug_mode:
             input_block = input("Please enter piece: ")
+        else:
+            # Get piece from computer
+            input_block = Quarto.givenPiece(quarto_agent).strip("piece")
 
-            # Check if piece is legal
-            if input_block in used_pieces:
-                print("Piece has already been used!")
+        # Check if piece is legal
+        if input_block in used_pieces:
+            print("Piece has already been used!")
 
-            elif input_block not in unused_pieces:
-                print("Not a legal piece!")
+        elif input_block not in unused_pieces:
+            print("Not a legal piece!")
 
-            else:
+        else:
+            next_piece = pygame.image.load(("images/p" + input_block + ".jpg"))
+            next_piece_rect = next_piece.get_rect()
+            next_piece_rect.center = (400, 600)
+            screen.blit(next_piece, next_piece_rect)
+            pygame.display.flip()
+
+            if computer_places and not debug_mode:
                 # Get placement from computer
                 # Update backend gamestate
-                givePieceHuman(quarto_agent, input_block)
+                Quarto.givePieceHuman(quarto_agent, input_block)
                 # Ask for where it placed it
-                ai_result = getBoard(quarto_agent)
+                ai_result = Quarto.getBoard(quarto_agent)
 
                 for cell in ai_result:
                     cell_x = Quarto.convert_to_int(cell[1])-1
@@ -212,7 +224,12 @@ def game():
                         input_x = cell_x
                         input_y = cell_y
                         break
-                
+            
+            else:
+                # Human inputs
+                input_x = int(input("Please enter x: "))
+                input_y = int(input("Please enter y: "))
+
                 # Check if coordinate is legal
                 # input_x = int(input("Please enter x: "))
                 # input_y = int(input("Please enter y: "))
@@ -239,43 +256,6 @@ def game():
                     idx_to_delete = unused_pieces.index(input_block)
                     del unused_pieces[idx_to_delete]
 
-        else:
-            # Get piece from computer
-            input_block = Quarto.givenPiece(quarto_agent).strip("piece")
-
-            if input_block in used_pieces:
-                print("Piece has already been used!")
-
-            elif input_block not in unused_pieces:
-                print("Not a legal piece!")
-
-            else:
-                input_x = int(input("Please enter x: "))
-                input_y = int(input("Please enter y: "))
-
-                # Check if coordinate is legal
-                if input_x < 0 or input_x > 3 or input_y < 0 or input_y > 3:
-                    print("Index out of range!")
-
-                elif board.spaces[input_x][input_y] != 0:
-                    print("A piece has already been placed there!")
-
-                else:
-                    # Place piece
-                    board.place(Block(input_block), int(input_x), int(input_y))
-                    Quarto.placePieceHuman(quarto_agent, input_x+1, input_y+1)
-                    
-                    # Swap piece off board with empty tile on board
-                    list_index = input_x + (input_y * 4)
-                    swap_out = on_board[list_index]
-                    on_board[list_index] = off_board[int(input_block)-1]
-                    off_board[int(input_block)-1] = swap_out
-
-                    draw_board(screen, on_board, off_board)
-
-                    used_pieces.append(input_block)
-                    idx_to_delete = unused_pieces.index(input_block)
-                    del unused_pieces[idx_to_delete]
 
         computer_places = not computer_places
 
