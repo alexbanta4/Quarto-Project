@@ -1,311 +1,4 @@
 (in-microtheory QuartoMt)
-(genlMt QuartoMt GameRulesMt)
-
-
-;;; DEFINE BOARD, SPACES, AND PIECES
-;;; create new category QuartoGamePiece
-;;; genls to gamepiece
-;;; Four functions on gamepiece for each attribute
-;;; ColorFn, HeightFn, ShapeFn, HollownessFn
-
-;;; GOAL STATE HORN CLAUSES
-
-;;; (spatialLocationPred Quarto cell 4)
-(maxCoordX Quarto 4)
-(maxCoordY Quarto 4)
-
-
-;;; We can use the same relation for all four attribute types
-;;; solid and hollow, square and circle, short and tall, white and brown
-(isa solid QuartoAttribute)
-(isa hollow QuartoAttribute)
-(isa short QuartoAttribute)
-(isa tall QuartoAttribute)
-(isa white QuartoAttribute)
-(isa brown QuartoAttribute)
-(isa square QuartoAttribute)
-(isa circle QuartoAttribute)
-
-
-(isa piece1 QuartoPiece)
-(pieceAttribute piece1 solid)
-(pieceAttribute piece1 square)
-(pieceAttribute piece1 short)
-(pieceAttribute piece1 white)
-
-(isa piece2 QuartoPiece)
-(pieceAttribute piece2 hollow)
-(pieceAttribute piece2 square)
-(pieceAttribute piece2 short)
-(pieceAttribute piece2 white)
-
-(isa piece3 QuartoPiece)
-(pieceAttribute piece3 solid)
-(pieceAttribute piece3 circle)
-(pieceAttribute piece3 short)
-(pieceAttribute piece3 white)
-
-(isa piece4 QuartoPiece)
-(pieceAttribute piece4 solid)
-(pieceAttribute piece4 square)
-(pieceAttribute piece4 tall)
-(pieceAttribute piece4 white)
-
-(isa piece5 QuartoPiece)
-(pieceAttribute piece5 hollow)
-(pieceAttribute piece5 circle)
-(pieceAttribute piece5 short)
-(pieceAttribute piece5 white)
-
-(isa piece6 QuartoPiece)
-(pieceAttribute piece6 solid)
-(pieceAttribute piece6 circle)
-(pieceAttribute piece6 tall)
-(pieceAttribute piece6 white)
-
-(isa piece7 QuartoPiece)
-(pieceAttribute piece7 hollow)
-(pieceAttribute piece7 square)
-(pieceAttribute piece7 tall)
-(pieceAttribute piece7 white)
-
-(isa piece8 QuartoPiece)
-(pieceAttribute piece8 hollow)
-(pieceAttribute piece8 circle)
-(pieceAttribute piece8 tall)
-(pieceAttribute piece8 white)
-
-(isa piece9 QuartoPiece)
-(pieceAttribute piece9 hollow)
-(pieceAttribute piece9 square)
-(pieceAttribute piece9 short)
-(pieceAttribute piece9 brown)
-
-(isa piece10 QuartoPiece)
-(pieceAttribute piece10 hollow)
-(pieceAttribute piece10 square)
-(pieceAttribute piece10 tall)
-(pieceAttribute piece10 brown)
-
-(isa piece11 QuartoPiece)
-(pieceAttribute piece11 solid)
-(pieceAttribute piece11 square)
-(pieceAttribute piece11 short)
-(pieceAttribute piece11 brown)
-
-(isa piece12 QuartoPiece)
-(pieceAttribute piece12 solid)
-(pieceAttribute piece12 square)
-(pieceAttribute piece12 tall)
-(pieceAttribute piece12 brown)
-
-(isa piece13 QuartoPiece)
-(pieceAttribute piece13 hollow)
-(pieceAttribute piece13 circle)
-(pieceAttribute piece13 short)
-(pieceAttribute piece13 brown)
-
-(isa piece14 QuartoPiece)
-(pieceAttribute piece14 hollow)
-(pieceAttribute piece14 circle)
-(pieceAttribute piece14 tall)
-(pieceAttribute piece14 brown)
-
-(isa piece15 QuartoPiece)
-(pieceAttribute piece15 solid)
-(pieceAttribute piece15 circle)
-(pieceAttribute piece15 short)
-(pieceAttribute piece15 brown)
-
-(isa piece16 QuartoPiece)
-(pieceAttribute piece16 solid)
-(pieceAttribute piece16 circle)
-(pieceAttribute piece16 tall)
-(pieceAttribute piece16 brown)
-
-
-(<== (shareAttribute ?piece1 ?piece2 ?attribute)
-    (pieceAttribute ?piece1 ?attribute)
-    (pieceAttribute ?piece2 ?attribute))
-
-(<== (shareTwoAttributes ?piece1 ?piece2)
-    (shareAttribute ?piece1 ?piece2 ?attribute1)
-    (shareAttribute ?piece1 ?piece2 ?attribute2)
-    (different ?piece1 ?piece2)
-    (different ?attribute1 ?attribute2))
-
-(<== (shareThreeAttributes ?piece1 ?piece2)
-    (shareAttribute ?piece1 ?piece2 ?attribute1)
-    (shareAttribute ?piece1 ?piece2 ?attribute2)
-    (shareAttribute ?piece1 ?piece2 ?attribute3)
-    (different ?piece1 ?piece2)
-    (different ?attribute1 ?attribute2)
-    (different ?attribute1 ?attribute3)
-    (different ?attribute2 ?attribute3))
-
-;;; Row
-(<== (all4Different ?a ?b ?c ?d)
-    (different ?a ?b)
-    (different ?a ?c)
-    (different ?a ?d)
-    (different ?b ?c)
-    (different ?b ?d)
-    (different ?c ?d))
-
-(<== (winningPlace ?x ?y ?piece)
-    (cell ?x ?y1 ?piece1)
-    (different ?piece1 Empty)
-    (cell ?x ?y2 ?piece2)
-    (different ?piece2 Empty)
-    (cell ?x ?y3 ?piece3)
-    (different ?piece3 Empty)
-    (cell ?x ?y Empty)
-    (all4Different ?y ?y1 ?y2 ?y3)
-    (pieceAttribute ?piece1 ?attribute)
-    (pieceAttribute ?piece2 ?attribute)
-    (pieceAttribute ?piece3 ?attribute)
-    (pieceAttribute ?piece ?attribute))
-
-(<== (winningPlace ?x ?y ?piece)
-    (cell ?x1 ?y ?piece1)
-    (different ?piece1 Empty)
-    (cell ?x2 ?y ?piece2)
-    (different ?piece2 Empty)
-    (cell ?x3 ?y ?piece3)
-    (different ?piece3 Empty)
-    (cell ?x ?y Empty)
-    (all4Different ?x ?x1 ?x2 ?x3)
-    (pieceAttribute ?piece1 ?attribute)
-    (pieceAttribute ?piece2 ?attribute)
-    (pieceAttribute ?piece3 ?attribute)
-    (pieceAttribute ?piece ?attribute))
-
-(<== (winningPlace 4 4 ?piece)
-    (cell 1 1 ?piece1)
-    (different ?piece1 Empty)
-    (cell 2 2 ?piece2)
-    (different ?piece2 Empty)
-    (cell 3 3 ?piece3)
-    (different ?piece3 Empty)
-    (cell 4 4 Empty)
-    (pieceAttribute ?piece1 ?attribute)
-    (pieceAttribute ?piece2 ?attribute)
-    (pieceAttribute ?piece3 ?attribute)
-    (pieceAttribute ?piece ?attribute))
-
-(<== (winningPlace 3 3 ?piece)
-    (cell 1 1 ?piece1)
-    (different ?piece1 Empty)
-    (cell 2 2 ?piece2)
-    (different ?piece2 Empty)
-    (cell 4 4 ?piece3)
-    (different ?piece3 Empty)
-    (cell 3 3 Empty)
-    (pieceAttribute ?piece1 ?attribute)
-    (pieceAttribute ?piece2 ?attribute)
-    (pieceAttribute ?piece3 ?attribute)
-    (pieceAttribute ?piece ?attribute))
-
-(<== (winningPlace 2 2 ?piece)
-    (cell 1 1 ?piece1)
-    (different ?piece1 Empty)
-    (cell 3 3 ?piece2)
-    (different ?piece1 Empty)
-    (cell 4 4 ?piece3)
-    (different ?piece1 Empty)
-    (cell 2 2 Empty)
-    (pieceAttribute ?piece1 ?attribute)
-    (pieceAttribute ?piece2 ?attribute)
-    (pieceAttribute ?piece3 ?attribute)
-    (pieceAttribute ?piece ?attribute))
-
-(<== (winningPlace 1 1 ?piece)
-    (cell 1 1 ?piece1)
-    (different ?piece1 Empty)
-    (cell 2 2 ?piece2)
-    (different ?piece1 Empty)
-    (cell 4 4 ?piece3)
-    (different ?piece1 Empty)
-    (cell 3 3 Empty)
-    (pieceAttribute ?piece1 ?attribute)
-    (pieceAttribute ?piece2 ?attribute)
-    (pieceAttribute ?piece3 ?attribute)
-    (pieceAttribute ?piece ?attribute))
-
-(<== (winningPlace 1 4 ?piece)
-    (cell 4 1 ?piece1)
-    (different ?piece1 Empty)
-    (cell 3 2 ?piece2)
-    (different ?piece1 Empty)
-    (cell 2 3 ?piece3)
-    (different ?piece1 Empty)
-    (cell 1 4 Empty)
-    (pieceAttribute ?piece1 ?attribute)
-    (pieceAttribute ?piece2 ?attribute)
-    (pieceAttribute ?piece3 ?attribute)
-    (pieceAttribute ?piece ?attribute))
-
-(<== (winningPlace 2 3 ?piece)
-    (cell 4 1 ?piece1)
-    (different ?piece1 Empty)
-    (cell 3 2 ?piece2)
-    (different ?piece1 Empty)
-    (cell 1 4 ?piece3)
-    (different ?piece1 Empty)
-    (cell 2 3 Empty)
-    (pieceAttribute ?piece1 ?attribute)
-    (pieceAttribute ?piece2 ?attribute)
-    (pieceAttribute ?piece3 ?attribute)
-    (pieceAttribute ?piece ?attribute))
-
-(<== (winningPlace 3 2 ?piece)
-    (cell 4 1 ?piece1)
-    (different ?piece1 Empty)
-    (cell 2 3 ?piece2)
-    (different ?piece1 Empty)
-    (cell 1 4 ?piece3)
-    (different ?piece1 Empty)
-    (cell 3 2 Empty)
-    (pieceAttribute ?piece1 ?attribute)
-    (pieceAttribute ?piece2 ?attribute)
-    (pieceAttribute ?piece3 ?attribute)
-    (pieceAttribute ?piece ?attribute))
-
-(<== (winningPlace 4 1 ?piece)
-    (cell 3 2 ?piece1)
-    (different ?piece1 Empty)
-    (cell 2 3 ?piece2)
-    (different ?piece1 Empty)
-    (cell 1 4 ?piece3)
-    (different ?piece1 Empty)
-    (cell 4 1 Empty)
-    (pieceAttribute ?piece1 ?attribute)
-    (pieceAttribute ?piece2 ?attribute)
-    (pieceAttribute ?piece3 ?attribute)
-    (pieceAttribute ?piece ?attribute))
-
-(<== (safePiece ?piece)
-    (isa ?piece QuartoPiece)
-    (uninferredSentence (winningPlace 1 1 ?piece))
-    (uninferredSentence (winningPlace 1 2 ?piece))
-    (uninferredSentence (winningPlace 1 3 ?piece))
-    (uninferredSentence (winningPlace 1 4 ?piece))
-    (uninferredSentence (winningPlace 2 1 ?piece))
-    (uninferredSentence (winningPlace 2 2 ?piece))
-    (uninferredSentence (winningPlace 2 3 ?piece))
-    (uninferredSentence (winningPlace 2 4 ?piece))
-    (uninferredSentence (winningPlace 3 1 ?piece))
-    (uninferredSentence (winningPlace 3 2 ?piece))
-    (uninferredSentence (winningPlace 3 3 ?piece))
-    (uninferredSentence (winningPlace 3 4 ?piece))
-    (uninferredSentence (winningPlace 4 1 ?piece))
-    (uninferredSentence (winningPlace 4 2 ?piece))
-    (uninferredSentence (winningPlace 4 3 ?piece))
-    (uninferredSentence (winningPlace 4 4 ?piece))
-    )
-
-
-;;; Complex
 
 (preconditionForMethod
  (and
@@ -326,6 +19,7 @@
       (cell 4 3 ?piece15)
       (cell 4 4 ?piece16)
       (givenPiece ?piece17)
+      (boardWon ?status)
       )
  (methodForAction
   (resetBoard)
@@ -365,6 +59,8 @@
         (ist-Information QuartoMt (cell 4 4 ?piece16)))
     (doForget
         (ist-Information QuartoMt (givenPiece ?piece17)))
+    (doForget
+        (ist-Information QuartoMt (boardWon ?status)))
     (doClearWorkingMemory)
     (doRecord
         (ist-Information QuartoMt (cell 1 1 Empty)))
@@ -400,6 +96,8 @@
         (ist-Information QuartoMt (cell 4 4 Empty)))
     (doRecord
         (ist-Information QuartoMt (givenPiece Empty)))
+    (doRecord
+        (ist-Information QuartoMt (boardWon False)))
     (doRecord
         (ist-Information QuartoMt (unplacedPiece piece1)))
     (doRecord
@@ -477,6 +175,8 @@
     (doRecord
         (ist-Information QuartoMt (givenPiece Empty)))
     (doRecord
+        (ist-Information QuartoMt (boardWon False)))
+    (doRecord
         (ist-Information QuartoMt (unplacedPiece piece1)))
     (doRecord
         (ist-Information QuartoMt (unplacedPiece piece2)))
@@ -524,15 +224,20 @@
         (ist-Information QuartoMt (givenPiece ?piece)))
     (doForget
         (ist-Information QuartoMt (cell ?x ?y Empty)))
+    (doForget
+        (ist-Information QuartoMt (boardWon False)))
     (doClearWorkingMemory)
     (doRecord
         (ist-Information QuartoMt (cell ?x ?y ?piece)))
     (doRecord
-	(ist-Information QuartoMt (givenPiece Empty)))
+	    (ist-Information QuartoMt (givenPiece Empty)))
+    (doRecord
+        (ist-Information QuartoMt (boardWon True)))
     ))))
 
 (preconditionForMethod
  (and
+      (playerType Survivor)
       (givenPiece ?piece)
       (safePiece ?piece)
       (cell ?x ?y Empty)
@@ -554,8 +259,128 @@
 
 (preconditionForMethod
  (and
+      (playerType Denier)
+      (givenPiece ?piece)
+      (safePiece ?piece)
+      (cell ?x ?y Empty)
+      (unplacedPiece ?piece1)
+      (winningPlace ?x ?y ?piece1)
+      (wingWin)
+      )
+ (methodForAction
+  (placePiece)
+  (actionSequence
+   (TheList
+    (doForget
+        (ist-Information QuartoMt (givenPiece ?piece)))
+    (doForget
+        (ist-Information QuartoMt (cell ?x ?y Empty)))
+    (doClearWorkingMemory)
+    (doRecord
+        (ist-Information QuartoMt (cell ?x ?y ?piece)))
+    (doRecord
+        (ist-Information QuartoMt (givenPiece Empty)))
+    ))))
+
+(preconditionForMethod
+ (and
+      (playerType Denier)
+      (givenPiece ?piece)
+      (safePiece ?piece)
+      (cell ?x ?y Empty)
+      (uninferredSentence (wingWin))
+      )
+ (methodForAction
+  (placePiece)
+  (actionSequence
+   (TheList
+    (doForget
+        (ist-Information QuartoMt (givenPiece ?piece)))
+    (doForget
+        (ist-Information QuartoMt (cell ?x ?y Empty)))
+    (doClearWorkingMemory)
+    (doRecord
+        (ist-Information QuartoMt (cell ?x ?y ?piece)))
+    (doRecord
+        (ist-Information QuartoMt (givenPiece Empty)))
+    ))))
+
+(preconditionForMethod
+ (and
+      (playerType Complicator)
+      (givenPiece ?piece)
+      (safePiece ?piece)
+      (cell ?x ?y Empty)
+      (complexPlace ?x ?y ?piece)
+      )
+ (methodForAction
+  (placePiece)
+  (actionSequence
+   (TheList
+    (doForget
+        (ist-Information QuartoMt (givenPiece ?piece)))
+    (doForget
+        (ist-Information QuartoMt (cell ?x ?y Empty)))
+    (doClearWorkingMemory)
+    (doRecord
+        (ist-Information QuartoMt (cell ?x ?y ?piece)))
+    (doRecord
+        (ist-Information QuartoMt (givenPiece Empty)))
+    ))))
+
+(preconditionForMethod
+ (and
+      (playerType Complicator)
+      (givenPiece ?piece)
+      (safePiece ?piece)
+      (cell ?x ?y Empty)
+      (simplePiece ?piece)
+      )
+ (methodForAction
+  (placePiece)
+  (actionSequence
+   (TheList
+    (doForget
+        (ist-Information QuartoMt (givenPiece ?piece)))
+    (doForget
+        (ist-Information QuartoMt (cell ?x ?y Empty)))
+    (doClearWorkingMemory)
+    (doRecord
+        (ist-Information QuartoMt (cell ?x ?y ?piece)))
+    (doRecord
+        (ist-Information QuartoMt (givenPiece Empty)))
+    ))))
+
+(preconditionForMethod
+ (and
       (givenPiece ?piece)
       (cell ?x ?y Empty)
+      (winningPlace ?x ?y ?piece)
+      )
+ (methodForAction
+  (placePieceLocation ?x ?y)
+  (actionSequence
+   (TheList
+    (doForget
+        (ist-Information QuartoMt (givenPiece ?piece)))
+    (doForget
+        (ist-Information QuartoMt (cell ?x ?y Empty)))
+    (doForget
+        (ist-Information QuartoMt (boardWon False)))
+    (doClearWorkingMemory)
+    (doRecord
+        (ist-Information QuartoMt (cell ?x ?y ?piece)))
+    (doRecord
+        (ist-Information QuartoMt (givenPiece Empty)))
+    (doRecord
+        (ist-Information QuartoMt (boardWon True)))
+    ))))
+    
+(preconditionForMethod
+ (and
+      (givenPiece ?piece)
+      (cell ?x ?y Empty)
+      (uninferredSentence (winningPlace ?x ?y ?piece))
       )
  (methodForAction
   (placePieceLocation ?x ?y)
@@ -592,6 +417,26 @@
     ))))
 
 (preconditionForMethod
+ (and 
+      (givenPiece Empty)
+      (unplacedPiece ?piece)
+      (uninferredSentence (safePiece ?piece1))
+      )
+ (methodForAction
+  (givePiece)
+  (actionSequence
+   (TheList
+    (doForget
+        (ist-Information QuartoMt (givenPiece Empty)))
+    (doForget
+        (ist-Information QuartoMt (unplacedPiece ?piece)))
+    (doClearWorkingMemory)
+    (doRecord
+        (ist-Information QuartoMt (givenPiece ?piece)))
+    ))))
+
+
+(preconditionForMethod
  (and
       (givenPiece Empty)
       (unplacedPiece ?piece)
@@ -609,4 +454,30 @@
         (ist-Information QuartoMt (givenPiece ?piece)))
     ))))
 
-
+(preconditionForMethod
+ (and
+      (playerType ?type)
+      )
+ (methodForAction
+  (setPlayerType ?newType)
+  (actionSequence
+   (TheList
+    (doForget
+        (ist-Information QuartoMt (playerType ?type)))
+    (doClearWorkingMemory)
+    (doRecord
+        (ist-Information QuartoMt (playerType ?newType)))
+    ))))
+    
+(preconditionForMethod
+ (and
+      (uninferredSentence (playerType ?type))
+      )
+ (methodForAction
+  (setPlayerType ?newType)
+  (actionSequence
+   (TheList
+    (doClearWorkingMemory)
+    (doRecord
+        (ist-Information QuartoMt (playerType ?newType)))
+    ))))

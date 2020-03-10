@@ -14,80 +14,97 @@
 (arity resetBoard 0)
 
 (isa placePiece ComplexActionPredicate)
+(comment placePiece "(placePiece) will put the givenPiece onto the board in an Empty cell. The current playerType will affect how the piece is placed, however all three prioritize placing it in a winning position. If there is no winning position, the Survivor will place it in an arbitrary empty spot. The Denier will try to block rows of three which share an attribute, and otherwise places arbitrarily. The Complicator will prioritize creating a row of three pieces that share an attribute, and otherwise places arbitrarily.")
 (arity placePiece 0)
 
 (isa givePiece ComplexActionPredicate)
+(comment givePiece "(givePiece) will set an ungivenPiece to be the givenPiece. It will prioritize pieces that cannot be used to win given the current board, but will otherwise give arbitarily.")
 (arity givePiece 0)
 
 (isa givePieceSpec ComplexActionPredicate)
+(comment givePieceSpec "(givePieceSpec ?number) will set piece? to be the givenPiece, if it is currently ungiven. This is used so that the human player can easily update the knowledge base.")
 (arity givePieceSpec 1)
 (arg1Isa givePieceSpec QuartoPiece)
 
 (isa setPlayerType ComplexActionPredicate)
+(comment setPlayerType "(setPlayerType ?type) will update the playerType to the current value. Possible values include Survivor, Denier, and Complicator.")
 (arity setPlayerType 1)
 
 (isa placePieceLocation ComplexActionPredicate)
+(comment placePieceLocation "(placePieceLocation ?x ?y) will put the givenPiece in the cell with coordinates ?x ?y. This is used so that the human player can easily update the knowledge base.")
 (arity placePieceLocation 2)
 
 (isa pieceAttribute Predicate)
+(comment pieceAttribute "(pieceAttribute QUARTOPIECE QUARTOATTRIBUTE) is a relation that shows the attributes of a given piece.")
 (arity pieceAttribute 2)
 (arg1Isa pieceAttribute QuartoPiece)
 (arg2Isa pieceAttribute QuartoAttribute)
 
 (isa givenPiece Predicate)
+(comment givenPiece "(givenPiece QUARTOPIECE) is a relation that marks a piece as the next to be placed.")
 (arity givenPiece 1)
 (arg1Isa givenPiece QuartoPiece)
 
 (isa unplacedPiece Predicate)
+(comment unplacedPiece "(unplacedPiece QUARTOPIECE) is a relation that marks a piece that has not been used yet.")
 (arity unplacedPiece 1)
 (arg1Isa unplacedPiece QuartoPiece)
 
 (isa playerType Predicate)
+(comment setPlayerType "(playerType ?type) is used to determine the current AI strategy and is used by placePiece. Possible values include Survivor, Denier, and Complicator.")
 (arity playerType 1)
 
 (isa boardWon Predicate)
+(comment boardWon "This is used to track wether a winning place has been made. It is updated by placePiece and resetBoard.")
 (arity boardWon 1)
 
 (isa shareAttribute Predicate)
+(comment shareAttribute "(shareAttribute QUARTOPIECE QUARTOPIECE QUARTOATTRIBUTE) determines if an attribute is shared between to pieces, and what it is.")
 (arity shareAttribute 3)
 (arg1Isa shareAttribute QuartoPiece)
 (arg2Isa shareAttribute QuartoPiece)
 (arg3Isa shareAttribute QuartoAttribute)
 
 (isa shareTwoAttributes Predicate)
+(comment shareTwoAttributes "(shareTwoAttributes QUARTOPIECE QUARTOPIECE) determines if two pieces share at least two attributes.")
 (arity shareTwoAttributes 2)
 (arg1Isa shareTwoAttributes QuartoPiece)
 (arg2Isa shareTwoAttributes QuartoPiece)
 
 (isa shareThreeAttributes Predicate)
+(comment shareThreeAttributes "(shareThreeAttributes QUARTOPIECE QUARTOPIECE) determines if two pieces share at least three attributes.")
 (arity shareThreeAttributes 2)
 (arg1Isa shareThreeAttributes QuartoPiece)
 (arg1Isa shareThreeAttributes QuartoPiece)
 
 (isa all4Different Predicate)
+(comment all4Different "(all4Different ?a ?b ?c ?d) checks if all four values are different")
 (arity all4Different 4)
 
 (isa winningPlace Predicate)
+(comment winningPlace "(winningPlace ?x ?y QUARTOPIECE) finds the coordinates, if any, that will allow the given piece to create a row of four matching attributes.")
 (arity winningPlace 3)
 (arg3Isa winningPlace QuartoPiece)
 
 (isa complexPlace Predicate)
+(comment complexPlace "(complexPlace ?x ?y QUARTOPIECE) finds the coordinates, if any, that will allow the given piece to create a row of three matching attributes.")
 (arity complexPlace 3)
 (arg3Isa complexPlace QuartoPiece)
 
 (isa winningBoard Predicate)
+(comment winningBoard "(winningBoard ?num) sets ?num to 100 if the current board has won.")
 (arity winningBoard 1)
 
 (isa safePiece Predicate)
+(comment safePiece "(safePiece QUARTOPIECE) will return any pieces that do not have a winning place on the board.")
 (arity safePiece 1)
 (arg1Isa safePiece QuartoPiece)
 
 (isa simplePiece Predicate)
+(comment simplePiece "(simplePiece QUARTOPIECE) will return any pieces that do not have a complex place on the board.")
 (arity simplePiece 1)
 (arg1Isa simplePiece QuartoPiece)
 
-(isa winningBoard Predicate)
-(arity winningBoard 1)
-
 (isa wingWin Predicate)
+(comment wingWin "(wingWin) will return true if their is an unplaced piece that has a winning place.")
 (arity wingWin 0)

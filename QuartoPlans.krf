@@ -1,5 +1,6 @@
 (in-microtheory QuartoMt)
 
+;;; Resets an already filled board and returns pieces to starting configurations
 (preconditionForMethod
  (and
       (cell 1 1 ?piece1)
@@ -132,6 +133,7 @@
         (ist-Information QuartoMt (unplacedPiece piece16)))
     ))))
 
+;;; Creates a board and implements starting configuration
 (preconditionForMethod
  (and
       (uninferredSentence (cell 1 1 ?piece))
@@ -211,6 +213,8 @@
     ))))
 
 
+;;; If the givenPiece wins, place it there
+;;; Highest priority place, used by all strategies
 (preconditionForMethod
  (and
       (givenPiece ?piece)
@@ -235,6 +239,7 @@
         (ist-Information QuartoMt (boardWon True)))
     ))))
 
+;;; Survivor will arbitrarily place if the givenPiece is a safePiece (No possible win placement)
 (preconditionForMethod
  (and
       (playerType Survivor)
@@ -257,6 +262,8 @@
         (ist-Information QuartoMt (givenPiece Empty)))
     ))))
 
+;;; Denier will try to block a row of three pieces that share an attribute
+;;; Importantley, this is only done if there is an unplacedPiece that also has that attribute
 (preconditionForMethod
  (and
       (playerType Denier)
@@ -282,6 +289,7 @@
         (ist-Information QuartoMt (givenPiece Empty)))
     ))))
 
+;;; Denier places piece arbitrarily given there is no three to block
 (preconditionForMethod
  (and
       (playerType Denier)
@@ -305,6 +313,7 @@
         (ist-Information QuartoMt (givenPiece Empty)))
     ))))
 
+;;; Complicator attempts to create rows of three pieces that share attributes
 (preconditionForMethod
  (and
       (playerType Complicator)
@@ -328,6 +337,7 @@
         (ist-Information QuartoMt (givenPiece Empty)))
     ))))
 
+;;; Complicator places arbitrarily if there is no way to create row of three
 (preconditionForMethod
  (and
       (playerType Complicator)
@@ -351,6 +361,7 @@
         (ist-Information QuartoMt (givenPiece Empty)))
     ))))
 
+;;; Lets human player set givenPiece to specific coordinates. Since this is a winning placement it also updates (boardWon)
 (preconditionForMethod
  (and
       (givenPiece ?piece)
@@ -375,7 +386,8 @@
     (doRecord
         (ist-Information QuartoMt (boardWon True)))
     ))))
-    
+
+;;; Lets human player set givenPiece to specific coordinates.
 (preconditionForMethod
  (and
       (givenPiece ?piece)
@@ -397,6 +409,7 @@
         (ist-Information QuartoMt (givenPiece Empty)))
     ))))
 
+;;; Sets an ungivenPiece and safePiece to be the givenPiece
 (preconditionForMethod
  (and
       (givenPiece Empty)
@@ -416,6 +429,7 @@
         (ist-Information QuartoMt (givenPiece ?piece)))
     ))))
 
+;;; Sets an ungivenPiece to be the givenPiece, for when their are no safePieces
 (preconditionForMethod
  (and 
       (givenPiece Empty)
@@ -435,7 +449,7 @@
         (ist-Information QuartoMt (givenPiece ?piece)))
     ))))
 
-
+;;; Used by the human player to set the piece to be the givenPiece
 (preconditionForMethod
  (and
       (givenPiece Empty)
@@ -454,6 +468,7 @@
         (ist-Information QuartoMt (givenPiece ?piece)))
     ))))
 
+;;; Updates strategy for AI player
 (preconditionForMethod
  (and
       (playerType ?type)
@@ -469,6 +484,7 @@
         (ist-Information QuartoMt (playerType ?newType)))
     ))))
     
+;;; Sets strategy for AI player
 (preconditionForMethod
  (and
       (uninferredSentence (playerType ?type))
