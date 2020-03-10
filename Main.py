@@ -1,3 +1,5 @@
+import sys
+
 import pygame
 import Quarto
 import companionsKQML
@@ -199,10 +201,12 @@ def game():
             else:
                 # Get placement from computer
                 # Update backend gamestate
-                givePieceHuman(quarto_agent, input_block)
+                Quarto.givePieceHuman(quarto_agent, input_block)
+                Quarto.placePieceMachine(quarto_agent)
                 # Ask for where it placed it
-                ai_result = getBoard(quarto_agent)
-
+                ai_result = Quarto.getBoard(quarto_agent)
+                input_x = -1 # If this is still the default value something has gone wrong
+                input_y = -1
                 for cell in ai_result:
                     cell_x = Quarto.convert_to_int(cell[1])-1
                     cell_y = Quarto.convert_to_int(cell[2])-1
@@ -239,8 +243,11 @@ def game():
                     idx_to_delete = unused_pieces.index(input_block)
                     del unused_pieces[idx_to_delete]
 
+                    computer_places = not computer_places
+
         else:
             # Get piece from computer
+            Quarto.givePieceMachine(quarto_agent)
             input_block = Quarto.givenPiece(quarto_agent).strip("piece")
 
             if input_block in used_pieces:
@@ -277,7 +284,7 @@ def game():
                     idx_to_delete = unused_pieces.index(input_block)
                     del unused_pieces[idx_to_delete]
 
-        computer_places = not computer_places
+                    computer_places = not computer_places
 
         """
         if board.check_whole():
